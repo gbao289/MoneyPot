@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "567534296288",
+    "project_id": "moneypot-387d6",
+    "storage_bucket": "moneypot-387d6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567534296288:android:9f6aac2340aaf88ed68485",
+        "android_client_info": {
+          "package_name": "vn.edu.giabao.huchitieu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXAfi-r3TuSDlNQk1wdf_NGArvgIldQKM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
