@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_overview"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="Tổng quan" />
+    <item
+        android:id="@+id/nav_calendar"
+        android:icon="@android:drawable/ic_menu_today"
+        android:title="Lịch" />
+    <item
+        android:id="@+id/nav_recurring"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="GD định kỳ" />
+    <item
+        android:id="@+id/nav_utilities"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Tiện ích" />
+</menu>

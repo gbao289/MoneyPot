@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "vn.edu.giabao.huchitieu"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "vn.edu.giabao.huchitieu"
@@ -38,6 +38,8 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
+    implementation(libs.glide)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

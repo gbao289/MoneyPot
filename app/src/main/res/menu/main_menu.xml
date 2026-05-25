@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_add_income"
-        android:title="Thêm thu nhập"
+        android:title=""
         app:showAsAction="ifRoom" />
 </menu>

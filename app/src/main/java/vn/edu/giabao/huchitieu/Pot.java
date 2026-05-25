@@ -5,6 +5,10 @@ public class Pot {
     private long balance;
     private int percent;
 
+    // Constructor mặc định cần thiết cho Firebase
+    public Pot() {
+    }
+
     public Pot(String name, long balance, int percent) {
         this.name = name;
         this.balance = balance;
@@ -15,11 +19,23 @@ public class Pot {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public long getBalance() {
         return balance;
     }
 
+    public void setBalance(long balance) {
+        this.balance = balance;
+    }
+
     public int getPercent() {
         return percent;
+    }
+
+    public void setPercent(int percent) {
+        this.percent = percent;
     }
 }
