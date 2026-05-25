@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -94,14 +95,22 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewPots.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPots.setAdapter(potAdapter);
 
-        // Logic điều hướng BottomNav
+        // Logic điều hướng Bottom Navigation
+        bottomNavigationView.setSelectedItemId(R.id.nav_overview);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_overview) return true;
+            if (id == R.id.nav_overview) {
+                return true;
+            } else if (id == R.id.nav_calendar) {
+                // Chuyển sang màn hình Lịch
+                Intent intent = new Intent(MainActivity.this, CalendarActivity.class);
+                intent.putExtra("USER_KEY", userKey);
+                startActivity(intent);
+                return true;
+            }
             return false;
         });
         
-        // Mở màn hình Thêm Hũ khi nhấn nút
         if (btnCreatePot != null) {
             btnCreatePot.setOnClickListener(v -> {
                 Intent intent = new Intent(MainActivity.this, AddPotActivity.class);
@@ -149,6 +158,10 @@ public class MainActivity extends AppCompatActivity {
                         totalValue += pot.getBalance();
                     }
                 }
+                
+                // Sắp xếp danh sách hũ theo phần trăm từ cao xuống thấp
+                Collections.sort(potList, (p1, p2) -> Integer.compare(p2.getPercent(), p1.getPercent()));
+
                 potAdapter.notifyDataSetChanged();
                 updateTotalValueUI(totalValue);
             }
