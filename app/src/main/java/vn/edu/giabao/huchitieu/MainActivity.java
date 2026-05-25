@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
-import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewPots;
     private PotAdapter potAdapter;
     private List<Pot> potList;
-    private TextView textViewTotalBalance, textViewUserName;
+    private TextView textViewTotalBalance, textViewUserName, textViewTotalIncome, textViewTotalExpense;
     private ImageView imageViewAvatar;
-    private MaterialCardView btnCreatePot;
+    private Button btnCreatePot;
     private BottomNavigationView bottomNavigationView;
     private DatabaseReference userRef, potsRef;
     private String userKey;
@@ -68,17 +67,20 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Ánh xạ View
         textViewTotalBalance = findViewById(R.id.textViewTotalBalance);
         textViewUserName = findViewById(R.id.textViewUserName);
+        textViewTotalIncome = findViewById(R.id.textViewTotalIncome);
+        textViewTotalExpense = findViewById(R.id.textViewTotalExpense);
         imageViewAvatar = findViewById(R.id.imageViewAvatar);
-        btnCreatePot = findViewById(R.id.btnCreatePot);
+        btnCreatePot = findViewById(R.id.btnCreatePot); // Button nhập giao dịch
         recyclerViewPots = findViewById(R.id.recyclerViewPots);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         userKey = getIntent().getStringExtra("USER_KEY");
         if (userKey != null) {
             userRef = FirebaseDatabase.getInstance().getReference("users").child(userKey);
-            potsRef = userRef.child("pots"); // Nút chứa danh sách các hũ
+            potsRef = userRef.child("pots");
             
             loadUserData();
             loadPotsData();
@@ -90,17 +92,25 @@ public class MainActivity extends AppCompatActivity {
             imagePickerLauncher.launch(intent);
         });
 
+        // Thiết lập RecyclerView
         potList = new ArrayList<>();
         potAdapter = new PotAdapter(potList);
         recyclerViewPots.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPots.setAdapter(potAdapter);
 
-        // Logic điều hướng
+        // Logic Bottom Navigation
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_overview) return true;
-            // Thêm các mục khác ở đây
+            if (id == R.id.nav_calendar) return true;
+            if (id == R.id.nav_recurring) return true;
+            if (id == R.id.nav_utilities) return true;
             return false;
+        });
+
+        // Gán sự kiện cho nút nhập giao dịch (nếu cần)
+        btnCreatePot.setOnClickListener(v -> {
+            Toast.makeText(this, "Tính năng nhập giao dịch đang phát triển", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -153,7 +163,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateTotalValueUI(long total) {
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        textViewTotalBalance.setText("Tổng giá trị: " + currencyFormat.format(total));
+        String formatted = currencyFormat.format(total);
+        textViewTotalBalance.setText("Tổng giá trị: " + formatted);
+        
+        // Hiện tại chúng ta giả định thu nhập bằng tổng giá trị hũ để hiển thị cho đẹp
+        textViewTotalIncome.setText(formatted);
+        textViewTotalExpense.setText("0đ");
     }
 
     private void saveImageToDatabase(Uri uri) {
