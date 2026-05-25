@@ -34,7 +34,8 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.PotViewHolder> {
         holder.textViewName.setText(pot.getName());
         
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        holder.textViewBalance.setText("Số dư: " + currencyFormat.format(pot.getBalance()));
+        // Đã xóa chữ "Số dư: " để giao diện thoáng và hiện đại hơn
+        holder.textViewBalance.setText(currencyFormat.format(pot.getBalance()));
         
         holder.progressBar.setProgress(pot.getPercent());
         holder.textViewPercent.setText(pot.getPercent() + "%");

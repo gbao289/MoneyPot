@@ -5,27 +5,29 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F6FA"
+    android:background="#F0F2F5"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:title="Quản Lý Hũ Chi Tiêu" />
+            app:title="Quản Lý Hũ Chi Tiêu"
+            app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="56dp"
+        android:paddingBottom="80dp"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -35,281 +37,113 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Phần Header: Avatar, Tên, Tổng giá trị -->
+            <!-- Phần Header hiện đại: Avatar, Tên, Tổng số dư -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="4dp"
                 app:strokeWidth="0dp">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="20dp"
+                    android:background="@color/white">
 
+                    <!-- Avatar tròn với viền Gradient giả lập (Primary Color) -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardAvatar"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        app:cardCornerRadius="30dp"
-                        app:strokeWidth="2dp"
-                        app:strokeColor="?attr/colorPrimary">
+                        android:layout_width="76dp"
+                        android:layout_height="76dp"
+                        app:cardCornerRadius="38dp"
+                        app:cardElevation="2dp"
+                        app:strokeWidth="3dp"
+                        app:strokeColor="?attr/colorPrimaryContainer"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
 
                         <ImageView
                             android:id="@+id/imageViewAvatar"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:contentDescription="Avatar"
                             android:scaleType="centerCrop"
                             android:src="@android:drawable/ic_menu_gallery" />
                     </com.google.android.material.card.MaterialCardView>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvGreeting"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:orientation="vertical">
+                        android:text="Xin chào,"
+                        android:textColor="#757575"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toEndOf="@+id/cardAvatar"
+                        app:layout_constraintTop_toTopOf="@+id/cardAvatar" />
+
+                    <TextView
+                        android:id="@+id/textViewUserName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="Người dùng"
+                        android:textColor="#212121"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toBottomOf="@+id/tvGreeting"
+                        app:layout_constraintStart_toEndOf="@+id/cardAvatar"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <!-- Hiển thị số dư phong cách hiện đại -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="4dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewUserName"
+                        app:layout_constraintStart_toEndOf="@+id/cardAvatar"
+                        app:layout_constraintEnd_toEndOf="parent">
 
                         <TextView
-                            android:id="@+id/textViewUserName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Người dùng"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:text="Tổng số dư:"
+                            android:textColor="#616161"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/textViewTotalBalance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tổng giá trị: 0đ"
+                            android:layout_marginStart="6dp"
+                            android:text="0₫"
                             android:textColor="?attr/colorPrimary"
-                            android:textSize="14sp"
-                            android:layout_marginTop="4dp" />
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
-                </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- GIAO DIỆN TÌNH HÌNH THU CHI MỚI -->
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <!-- Danh sách các Hũ -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tình hình thu chi"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:text="Phân bổ"
-                        android:textSize="12sp"
-                        android:paddingHorizontal="8dp"
-                        android:textColor="#E91E63"
-                        app:icon="@android:drawable/ic_menu_sort_by_size"
-                        app:iconTint="#E91E63"
-                        app:iconSize="16dp" />
-
-                </LinearLayout>
-            </RelativeLayout>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#EEEEEE"
-                android:layout_marginBottom="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <!-- Chọn thời gian -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_marginBottom="16dp">
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@android:drawable/ic_media_previous"
-                            app:tint="#888888" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tháng này"
-                            android:layout_marginHorizontal="12dp"
-                            android:textStyle="bold"
-                            android:drawablePadding="8dp"
-                            app:drawableStartCompat="@android:drawable/ic_menu_my_calendar"
-                            app:drawableTint="#333333" />
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@android:drawable/ic_media_next"
-                            app:tint="#888888" />
-                    </LinearLayout>
-
-                    <!-- Hai ô Thu nhập / Chi tiêu -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_outline_box"
-                            android:padding="12dp"
-                            android:layout_marginEnd="4dp"
-                            android:orientation="vertical">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Chi tiêu"
-                                android:textSize="12sp"
-                                android:drawablePadding="4dp"
-                                app:drawableStartCompat="@android:drawable/ic_menu_send"
-                                app:drawableTint="#E91E63" />
-                            <TextView
-                                android:id="@+id/textViewTotalExpense"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0đ"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_marginTop="4dp"
-                                android:textColor="#333333" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_outline_box"
-                            android:padding="12dp"
-                            android:layout_marginStart="4dp"
-                            android:orientation="vertical">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Thu nhập"
-                                android:textSize="12sp"
-                                android:drawablePadding="4dp"
-                                app:drawableStartCompat="@android:drawable/ic_input_add"
-                                app:drawableTint="#4CAF50" />
-                            <TextView
-                                android:id="@+id/textViewTotalIncome"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0đ"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_marginTop="4dp"
-                                android:textColor="#333333" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- Dòng thông báo so sánh -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:background="#F0F9F0"
-                        android:padding="8dp"
-                        android:gravity="center_vertical">
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@android:drawable/ic_menu_sort_alphabetically"
-                            app:tint="#4CAF50" />
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Giảm 30.000đ so với tháng trước"
-                            android:textSize="11sp"
-                            android:layout_marginStart="8dp"
-                            android:textColor="#4CAF50" />
-                        <ImageView
-                            android:layout_width="12dp"
-                            android:layout_height="12dp"
-                            android:src="@android:drawable/ic_media_next"
-                            app:tint="#4CAF50" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Box hành động -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="#F0F4F8"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Ghi chép mọi chi tiêu giúp bạn theo dõi chính xác tình hình tài chính của mình."
-                        android:textSize="13sp"
-                        android:textColor="#666666"
-                        android:gravity="center"
-                        android:layout_marginBottom="16dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnCreatePot"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Nhập giao dịch chi"
-                        android:textColor="#E91E63"
-                        app:strokeColor="#E91E63"
-                        app:icon="@android:drawable/ic_menu_edit"
-                        app:iconTint="#E91E63" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Placeholder cho biểu đồ tròn -->
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="24dp"
-                android:src="@android:drawable/presence_online"
-                android:alpha="0.2"
-                app:tint="#888888" />
-
+                android:text="Hũ chi tiêu của bạn"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="12dp"
+                android:layout_marginStart="4dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewPots"
@@ -317,6 +151,20 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_pot" />
+
+            <!-- Nút Tạo hũ mới -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCreatePot"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="20dp"
+                android:text="Thêm hũ mới"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                app:cornerRadius="16dp"
+                app:icon="@android:drawable/ic_input_add"
+                app:iconGravity="textStart"
+                style="@style/Widget.MaterialComponents.Button" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -326,7 +174,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="?android:attr/windowBackground"
+        android:background="@color/white"
+        app:elevation="16dp"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

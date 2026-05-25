@@ -1,51 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@color/white">
+
+        <!-- Icon giả lập hoặc màu sắc đại diện cho hũ -->
+        <View
+            android:id="@+id/viewColorTag"
+            android:layout_width="4dp"
+            android:layout_height="0dp"
+            android:background="?attr/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textViewPotName"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewPotBalance" />
 
         <TextView
             android:id="@+id/textViewPotName"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:text="Tên Hũ"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textColor="#212121"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textViewPotPercent"
+            app:layout_constraintStart_toEndOf="@id/viewColorTag"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textViewPotBalance"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Số dư: 0đ"
-            android:textColor="@color/design_default_color_primary"
-            android:textSize="16sp" />
-
-        <ProgressBar
-            android:id="@+id/progressBarPot"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:progress="50" />
+            android:layout_marginTop="2dp"
+            android:text="0₫"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textViewPotName"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPotName" />
 
         <TextView
             android:id="@+id/textViewPotPercent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="50%"
-            android:textSize="12sp" />
+            android:text="0%"
+            android:textColor="#757575"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewPotName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textViewPotName" />
 
-    </LinearLayout>
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBarPot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:trackThickness="8dp"
+            app:trackCornerRadius="4dp"
+            app:trackColor="#F0F2F5"
+            app:indicatorColor="?attr/colorPrimary"
+            android:progress="40"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPotBalance"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

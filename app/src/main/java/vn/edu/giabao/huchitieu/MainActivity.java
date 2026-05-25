@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewPots;
     private PotAdapter potAdapter;
     private List<Pot> potList;
-    private TextView textViewTotalBalance, textViewUserName, textViewTotalIncome, textViewTotalExpense;
+    private TextView textViewTotalBalance, textViewUserName;
     private ImageView imageViewAvatar;
-    private Button btnCreatePot;
+    private MaterialButton btnCreatePot; 
     private BottomNavigationView bottomNavigationView;
     private DatabaseReference userRef, potsRef;
     private String userKey;
@@ -67,20 +67,17 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Ánh xạ View
         textViewTotalBalance = findViewById(R.id.textViewTotalBalance);
         textViewUserName = findViewById(R.id.textViewUserName);
-        textViewTotalIncome = findViewById(R.id.textViewTotalIncome);
-        textViewTotalExpense = findViewById(R.id.textViewTotalExpense);
         imageViewAvatar = findViewById(R.id.imageViewAvatar);
-        btnCreatePot = findViewById(R.id.btnCreatePot); // Button nhập giao dịch
+        btnCreatePot = findViewById(R.id.btnCreatePot);
         recyclerViewPots = findViewById(R.id.recyclerViewPots);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         userKey = getIntent().getStringExtra("USER_KEY");
         if (userKey != null) {
             userRef = FirebaseDatabase.getInstance().getReference("users").child(userKey);
-            potsRef = userRef.child("pots");
+            potsRef = userRef.child("pots"); 
             
             loadUserData();
             loadPotsData();
@@ -92,29 +89,30 @@ public class MainActivity extends AppCompatActivity {
             imagePickerLauncher.launch(intent);
         });
 
-        // Thiết lập RecyclerView
         potList = new ArrayList<>();
         potAdapter = new PotAdapter(potList);
         recyclerViewPots.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPots.setAdapter(potAdapter);
 
-        // Logic Bottom Navigation
+        // Logic điều hướng BottomNav
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_overview) return true;
-            if (id == R.id.nav_calendar) return true;
-            if (id == R.id.nav_recurring) return true;
-            if (id == R.id.nav_utilities) return true;
             return false;
         });
-
-        // Gán sự kiện cho nút nhập giao dịch (nếu cần)
-        btnCreatePot.setOnClickListener(v -> {
-            Toast.makeText(this, "Tính năng nhập giao dịch đang phát triển", Toast.LENGTH_SHORT).show();
-        });
+        
+        // Mở màn hình Thêm Hũ khi nhấn nút
+        if (btnCreatePot != null) {
+            btnCreatePot.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, AddPotActivity.class);
+                intent.putExtra("USER_KEY", userKey);
+                startActivity(intent);
+            });
+        }
     }
 
     private void loadUserData() {
+        if (userRef == null) return;
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -138,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadPotsData() {
+        if (potsRef == null) return;
         potsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -163,12 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateTotalValueUI(long total) {
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        String formatted = currencyFormat.format(total);
-        textViewTotalBalance.setText("Tổng giá trị: " + formatted);
-        
-        // Hiện tại chúng ta giả định thu nhập bằng tổng giá trị hũ để hiển thị cho đẹp
-        textViewTotalIncome.setText(formatted);
-        textViewTotalExpense.setText("0đ");
+        textViewTotalBalance.setText(currencyFormat.format(total));
     }
 
     private void saveImageToDatabase(Uri uri) {
@@ -179,7 +173,9 @@ public class MainActivity extends AppCompatActivity {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream);
             String encodedImage = Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
-            userRef.child("avatarUrl").setValue(encodedImage);
+            if (userRef != null) {
+                userRef.child("avatarUrl").setValue(encodedImage);
+            }
         } catch (Exception e) { e.printStackTrace(); }
     }
 }

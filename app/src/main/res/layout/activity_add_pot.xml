@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FA"
+    tools:context=".AddPotActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:navigationIcon="@android:drawable/ic_menu_revert"
+            app:title="Thêm Hũ Chi Tiêu"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Tên hũ - Đã thêm textColorHint đen đậm -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tên hũ chi tiêu"
+                android:textColorHint="#000000"
+                app:boxStrokeWidth="2.5dp"
+                app:boxStrokeColor="#000000"
+                app:boxStrokeWidthFocused="3dp"
+                app:hintTextColor="#000000"
+                app:startIconDrawable="@android:drawable/ic_menu_edit"
+                app:startIconTint="#000000">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPotName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapWords"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingVertical="18dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Số dư - Đã thêm textColorHint đen đậm -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:hint="Số dư ban đầu (₫)"
+                android:textColorHint="#000000"
+                app:boxStrokeWidth="2.5dp"
+                app:boxStrokeColor="#000000"
+                app:boxStrokeWidthFocused="3dp"
+                app:hintTextColor="#000000"
+                app:startIconDrawable="@android:drawable/ic_menu_send"
+                app:startIconTint="#000000">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etInitialBalance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingVertical="18dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Phần trăm - Đã thêm textColorHint đen đậm -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:hint="Phần trăm mục tiêu (%)"
+                android:textColorHint="#000000"
+                app:boxStrokeWidth="2.5dp"
+                app:boxStrokeColor="#000000"
+                app:boxStrokeWidthFocused="3dp"
+                app:hintTextColor="#000000"
+                app:startIconDrawable="@android:drawable/ic_menu_sort_by_size"
+                app:startIconTint="#000000">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPercent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingVertical="18dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSavePot"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginTop="48dp"
+                android:text="LƯU HŨ CHI TIÊU"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1"
+                app:cornerRadius="16dp"
+                app:elevation="6dp"
+                style="@style/Widget.MaterialComponents.Button" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
