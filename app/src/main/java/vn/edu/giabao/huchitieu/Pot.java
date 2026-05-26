@@ -1,6 +1,7 @@
 package vn.edu.giabao.huchitieu;
 
 public class Pot {
+    private String key; // Thêm key để định danh hũ trên Firebase
     private String name;
     private long balance;
     private int percent;
@@ -13,6 +14,14 @@ public class Pot {
         this.name = name;
         this.balance = balance;
         this.percent = percent;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getName() {

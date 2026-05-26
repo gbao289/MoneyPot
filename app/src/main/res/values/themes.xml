@@ -16,4 +16,10 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <!-- Style mới giúp tiêu đề Bottom Nav in đậm -->
+    <style name="BottomNavTextStyle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>

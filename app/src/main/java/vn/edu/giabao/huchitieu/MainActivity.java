@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,7 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PotAdapter.OnPotClickListener {
 
     private RecyclerView recyclerViewPots;
     private PotAdapter potAdapter;
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         potList = new ArrayList<>();
-        potAdapter = new PotAdapter(potList);
+        potAdapter = new PotAdapter(potList, this);
         recyclerViewPots.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPots.setAdapter(potAdapter);
 
@@ -102,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_overview) {
                 return true;
             } else if (id == R.id.nav_calendar) {
-                // Chuyển sang màn hình Lịch
                 Intent intent = new Intent(MainActivity.this, CalendarActivity.class);
                 intent.putExtra("USER_KEY", userKey);
                 startActivity(intent);
@@ -118,6 +119,56 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             });
         }
+    }
+
+    @Override
+    public void onPotClick(Pot pot) {
+        showAdjustPotDialog(pot);
+    }
+
+    private void showAdjustPotDialog(Pot pot) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_pot, null);
+        builder.setView(view);
+
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        MaterialButton btnEdit = view.findViewById(R.id.btnEdit);
+        MaterialButton btnDelete = view.findViewById(R.id.btnDelete);
+
+        btnEdit.setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(MainActivity.this, AddPotActivity.class);
+            intent.putExtra("USER_KEY", userKey);
+            intent.putExtra("POT_KEY", pot.getKey());
+            intent.putExtra("POT_NAME", pot.getName());
+            intent.putExtra("POT_BALANCE", pot.getBalance());
+            intent.putExtra("POT_PERCENT", pot.getPercent());
+            startActivity(intent);
+        });
+
+        btnDelete.setOnClickListener(v -> {
+            dialog.dismiss();
+            new AlertDialog.Builder(this)
+                    .setTitle("Xác nhận xóa")
+                    .setMessage("Bạn có chắc chắn muốn xóa hũ \"" + pot.getName() + "\"?")
+                    .setPositiveButton("Xóa", (d, which) -> {
+                        potsRef.child(pot.getKey()).removeValue().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(MainActivity.this, "Đã xóa hũ", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MainActivity.this, "Lỗi khi xóa hũ", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    })
+                    .setNegativeButton("Hủy", null)
+                    .show();
+        });
+
+        dialog.show();
     }
 
     private void loadUserData() {
@@ -154,14 +205,12 @@ public class MainActivity extends AppCompatActivity {
                 for (DataSnapshot data : snapshot.getChildren()) {
                     Pot pot = data.getValue(Pot.class);
                     if (pot != null) {
+                        pot.setKey(data.getKey());
                         potList.add(pot);
                         totalValue += pot.getBalance();
                     }
                 }
-                
-                // Sắp xếp danh sách hũ theo phần trăm từ cao xuống thấp
                 Collections.sort(potList, (p1, p2) -> Integer.compare(p2.getPercent(), p1.getPercent()));
-
                 potAdapter.notifyDataSetChanged();
                 updateTotalValueUI(totalValue);
             }

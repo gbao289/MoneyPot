@@ -16,9 +16,15 @@ import java.util.Locale;
 public class PotAdapter extends RecyclerView.Adapter<PotAdapter.PotViewHolder> {
 
     private List<Pot> potList;
+    private OnPotClickListener listener;
 
-    public PotAdapter(List<Pot> potList) {
+    public interface OnPotClickListener {
+        void onPotClick(Pot pot);
+    }
+
+    public PotAdapter(List<Pot> potList, OnPotClickListener listener) {
         this.potList = potList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -34,11 +40,16 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.PotViewHolder> {
         holder.textViewName.setText(pot.getName());
         
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        // Đã xóa chữ "Số dư: " để giao diện thoáng và hiện đại hơn
         holder.textViewBalance.setText(currencyFormat.format(pot.getBalance()));
         
         holder.progressBar.setProgress(pot.getPercent());
         holder.textViewPercent.setText(pot.getPercent() + "%");
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onPotClick(pot);
+            }
+        });
     }
 
     @Override

@@ -13,14 +13,20 @@ public class AddPotActivity extends AppCompatActivity {
 
     private TextInputEditText etPotName, etInitialBalance, etPercent;
     private MaterialButton btnSavePot;
-    private String userKey;
+    private String userKey, potKey;
     private DatabaseReference potsRef;
+    private boolean isEditMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_pot);
 
+        initViews();
+        setupData();
+    }
+
+    private void initViews() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -33,12 +39,30 @@ public class AddPotActivity extends AppCompatActivity {
         etPercent = findViewById(R.id.etPercent);
         btnSavePot = findViewById(R.id.btnSavePot);
 
+        btnSavePot.setOnClickListener(v -> savePot());
+    }
+
+    private void setupData() {
         userKey = getIntent().getStringExtra("USER_KEY");
+        potKey = getIntent().getStringExtra("POT_KEY");
+
         if (userKey != null) {
             potsRef = FirebaseDatabase.getInstance().getReference("users").child(userKey).child("pots");
         }
 
-        btnSavePot.setOnClickListener(v -> savePot());
+        // Kiểm tra nếu có potKey thì là chế độ Sửa
+        if (potKey != null) {
+            isEditMode = true;
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle("Sửa Hũ Chi Tiêu");
+            }
+            btnSavePot.setText("Cập Nhật Hũ");
+
+            // Đổ dữ liệu cũ vào các ô nhập
+            etPotName.setText(getIntent().getStringExtra("POT_NAME"));
+            etInitialBalance.setText(String.valueOf(getIntent().getLongExtra("POT_BALANCE", 0)));
+            etPercent.setText(String.valueOf(getIntent().getIntExtra("POT_PERCENT", 0)));
+        }
     }
 
     private void savePot() {
@@ -55,18 +79,24 @@ public class AddPotActivity extends AppCompatActivity {
         int percent = Integer.parseInt(percentStr);
 
         if (potsRef != null) {
-            String potId = potsRef.push().getKey();
             Pot pot = new Pot(name, balance, percent);
-            if (potId != null) {
-                potsRef.child(potId).setValue(pot).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(this, "Thêm hũ thành công", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Lỗi khi thêm hũ", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            
+            DatabaseReference targetRef;
+            if (isEditMode) {
+                targetRef = potsRef.child(potKey);
+            } else {
+                targetRef = potsRef.push();
             }
+
+            targetRef.setValue(pot).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    String msg = isEditMode ? "Cập nhật thành công" : "Thêm hũ thành công";
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(this, "Lỗi xảy ra, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
