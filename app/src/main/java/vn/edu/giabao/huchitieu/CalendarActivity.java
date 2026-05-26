@@ -284,6 +284,13 @@ public class CalendarActivity extends AppCompatActivity {
                 finish();
                 overridePendingTransition(0, 0);
                 return true;
+            } else if (id == R.id.nav_utilities) {
+                Intent intent = new Intent(this, UtilitiesActivity.class);
+                intent.putExtra("USER_KEY", userKey);
+                startActivity(intent);
+                finish();
+                overridePendingTransition(0, 0);
+                return true;
             }
             return id == R.id.nav_calendar;
         });

@@ -41,6 +41,9 @@
         <activity android:name=".AddTransactionActivity"
             android:label="Nhập Giao Dịch"
             android:parentActivityName=".CalendarActivity" />
+        <activity android:name=".UtilitiesActivity"
+            android:label="Tiện ích"
+            android:parentActivityName=".MainActivity" />
 
     </application>
 
