@@ -18,9 +18,15 @@ public class CalendarDayAdapter extends RecyclerView.Adapter<CalendarDayAdapter.
 
     private List<CalendarDay> days;
     private int selectedPosition = -1;
+    private OnDayClickListener listener;
 
-    public CalendarDayAdapter(List<CalendarDay> days) {
+    public interface OnDayClickListener {
+        void onDayClick(CalendarDay day);
+    }
+
+    public CalendarDayAdapter(List<CalendarDay> days, OnDayClickListener listener) {
         this.days = days;
+        this.listener = listener;
         // Tìm vị trí của ngày hôm nay để mặc định chọn
         for (int i = 0; i < days.size(); i++) {
             if (days.get(i).isToday()) {
@@ -47,15 +53,18 @@ public class CalendarDayAdapter extends RecyclerView.Adapter<CalendarDayAdapter.
         
         holder.tvDayNumber.setText(String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
         
-        if (day.getAmount() > 0) {
+        if (day.getAmount() != 0) {
             holder.tvDayAmount.setVisibility(View.VISIBLE);
             holder.tvDayAmount.setText(formatAmount(day.getAmount()));
+            // Màu sắc theo Thu/Chi (Xanh nếu dương, Đỏ nếu âm)
+            holder.tvDayAmount.setTextColor(day.getAmount() > 0 ? Color.parseColor("#4CAF50") : Color.parseColor("#F44336"));
         } else {
-            holder.tvDayAmount.setText("0₫"); // Hoặc để trống tùy ý bạn
+            holder.tvDayAmount.setText("0₫");
+            holder.tvDayAmount.setTextColor(Color.LTGRAY);
             holder.tvDayAmount.setVisibility(View.VISIBLE);
         }
 
-        // Logic hiển thị Today Circle (Dấu chấm xanh hoặc nền tròn cho số ngày)
+        // Logic hiển thị Today Circle
         if (day.isToday()) {
             holder.tvDayNumber.setTextColor(Color.WHITE);
             holder.tvDayNumber.setBackgroundResource(R.drawable.bg_today_circle);
@@ -64,9 +73,9 @@ public class CalendarDayAdapter extends RecyclerView.Adapter<CalendarDayAdapter.
             holder.tvDayNumber.setBackground(null);
         }
 
-        // Logic hiển thị viền Xanh khi được CHỌN (Selected)
+        // Logic hiển thị viền Xanh khi được CHỌN
         if (day.isSelected()) {
-            holder.cardView.setStrokeColor(Color.parseColor("#1A237E")); // Màu Primary
+            holder.cardView.setStrokeColor(Color.parseColor("#1A237E"));
             holder.cardView.setStrokeWidth(4);
         } else {
             holder.cardView.setStrokeColor(Color.parseColor("#F0F0F0"));
@@ -88,12 +97,18 @@ public class CalendarDayAdapter extends RecyclerView.Adapter<CalendarDayAdapter.
             selectedPosition = currentPos;
             days.get(selectedPosition).setSelected(true);
             notifyItemChanged(selectedPosition);
+
+            // Thông báo cho Activity để lọc giao dịch
+            if (listener != null) {
+                listener.onDayClick(day);
+            }
         });
     }
 
     private String formatAmount(long amount) {
-        if (amount >= 1000000) return (amount / 1000000) + "tr";
-        if (amount >= 1000) return (amount / 1000) + "k";
+        long absAmount = Math.abs(amount);
+        if (absAmount >= 1000000) return (amount / 1000000) + "tr";
+        if (absAmount >= 1000) return (amount / 1000) + "k";
         return String.valueOf(amount);
     }
 

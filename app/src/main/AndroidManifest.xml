@@ -35,6 +35,12 @@
         <activity android:name=".CalendarActivity"
             android:label="Lịch"
             android:parentActivityName=".MainActivity" />
+        <activity android:name=".RecurringTransactionActivity"
+            android:label="Giao Dịch Định Kỳ"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".AddTransactionActivity"
+            android:label="Nhập Giao Dịch"
+            android:parentActivityName=".CalendarActivity" />
 
     </application>
 

@@ -97,20 +97,7 @@ public class MainActivity extends AppCompatActivity implements PotAdapter.OnPotC
         recyclerViewPots.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPots.setAdapter(potAdapter);
 
-        // Logic điều hướng Bottom Navigation
-        bottomNavigationView.setSelectedItemId(R.id.nav_overview);
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_overview) {
-                return true;
-            } else if (id == R.id.nav_calendar) {
-                Intent intent = new Intent(MainActivity.this, CalendarActivity.class);
-                intent.putExtra("USER_KEY", userKey);
-                startActivity(intent);
-                return true;
-            }
-            return false;
-        });
+        setupNavigation();
         
         if (btnCreatePot != null) {
             btnCreatePot.setOnClickListener(v -> {
@@ -119,6 +106,31 @@ public class MainActivity extends AppCompatActivity implements PotAdapter.OnPotC
                 startActivity(intent);
             });
         }
+    }
+
+    private void setupNavigation() {
+        bottomNavigationView.setSelectedItemId(R.id.nav_overview);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_overview) {
+                return true;
+            } else if (id == R.id.nav_calendar) {
+                Intent intent = new Intent(this, CalendarActivity.class);
+                intent.putExtra("USER_KEY", userKey);
+                startActivity(intent);
+                finish();
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (id == R.id.nav_recurring) {
+                Intent intent = new Intent(this, RecurringTransactionActivity.class);
+                intent.putExtra("USER_KEY", userKey);
+                startActivity(intent);
+                finish();
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override
@@ -156,13 +168,15 @@ public class MainActivity extends AppCompatActivity implements PotAdapter.OnPotC
                     .setTitle("Xác nhận xóa")
                     .setMessage("Bạn có chắc chắn muốn xóa hũ \"" + pot.getName() + "\"?")
                     .setPositiveButton("Xóa", (d, which) -> {
-                        potsRef.child(pot.getKey()).removeValue().addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "Đã xóa hũ", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(MainActivity.this, "Lỗi khi xóa hũ", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        if (potsRef != null && pot.getKey() != null) {
+                            potsRef.child(pot.getKey()).removeValue().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(MainActivity.this, "Đã xóa hũ", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(MainActivity.this, "Lỗi khi xóa hũ", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     })
                     .setNegativeButton("Hủy", null)
                     .show();

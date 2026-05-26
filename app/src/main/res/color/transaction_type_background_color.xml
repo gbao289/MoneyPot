@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Khi nút được chọn: Sử dụng màu Primary -->
+    <item android:color="#1A237E" android:state_checked="true" />
+    <!-- Khi nút không được chọn: Trong suốt để hiện viền -->
+    <item android:color="@android:color/transparent" />
+</selector>
