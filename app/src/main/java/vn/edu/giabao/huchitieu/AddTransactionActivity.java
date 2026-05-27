@@ -2,6 +2,7 @@ package vn.edu.giabao.huchitieu;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,12 +31,14 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private TextInputEditText etAmount, etDate, etNote;
     private AutoCompleteTextView atvFrequency, atvSource;
+    private TextInputLayout tilSource;
     private MaterialButtonToggleGroup toggleGroupType;
     private MaterialButton btnSave;
     private String userKey;
     private Calendar calendar = Calendar.getInstance();
     private List<Pot> potList = new ArrayList<>();
     private List<String> potNames = new ArrayList<>();
+    private long currentUserBalance = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         setupDropdowns();
         setupDatePicker();
         loadPotsData();
+        loadUserData();
     }
 
     private void initViews() {
@@ -62,10 +67,28 @@ public class AddTransactionActivity extends AppCompatActivity {
         etNote = findViewById(R.id.etNote);
         atvFrequency = findViewById(R.id.atvFrequency);
         atvSource = findViewById(R.id.atvSource);
+        tilSource = findViewById(R.id.tilSource);
         toggleGroupType = findViewById(R.id.toggleGroupType);
         btnSave = findViewById(R.id.btnSaveTransaction);
 
         updateLabel();
+
+        toggleGroupType.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                if (checkedId == R.id.btnIncome) {
+                    tilSource.setVisibility(View.GONE);
+                } else {
+                    tilSource.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        // Set default state based on initial selection
+        if (toggleGroupType.getCheckedButtonId() == R.id.btnIncome) {
+            tilSource.setVisibility(View.GONE);
+        } else {
+            tilSource.setVisibility(View.VISIBLE);
+        }
 
         btnSave.setOnClickListener(v -> saveTransaction());
     }
@@ -94,6 +117,22 @@ public class AddTransactionActivity extends AppCompatActivity {
         String myFormat = "dd/MM/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
         etDate.setText(sdf.format(calendar.getTime()));
+    }
+
+    private void loadUserData() {
+        if (userKey == null) return;
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userKey);
+        userRef.child("balance").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    currentUserBalance = snapshot.getValue(Long.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
     }
 
     private void loadPotsData() {
@@ -129,40 +168,49 @@ public class AddTransactionActivity extends AppCompatActivity {
         String frequency = atvFrequency.getText().toString();
         String potName = atvSource.getText().toString();
 
-        if (amountStr.isEmpty() || potName.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập số tiền và chọn nguồn tiền", Toast.LENGTH_SHORT).show();
+        if (amountStr.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập số tiền", Toast.LENGTH_SHORT).show();
             return;
         }
 
         long amount = Long.parseLong(amountStr);
         String type = toggleGroupType.getCheckedButtonId() == R.id.btnIncome ? "Income" : "Expense";
 
-        // Tìm Pot được chọn để lấy key và cập nhật số dư
-        Pot selectedPot = null;
-        for (Pot pot : potList) {
-            if (pot.getName().equals(potName)) {
-                selectedPot = pot;
-                break;
-            }
-        }
-
-        if (selectedPot == null) return;
-
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(userKey);
         String transKey = dbRef.child("transactions").push().getKey();
 
-        Transaction transaction = new Transaction(amount, dateStr, type, frequency, selectedPot.getKey(), note, calendar.getTimeInMillis());
-        
-        if (transKey != null) {
-            // 1. Lưu giao dịch
-            dbRef.child("transactions").child(transKey).setValue(transaction);
+        if (type.equals("Income")) {
+            Transaction transaction = new Transaction(amount, dateStr, type, frequency, "GeneralBalance", note, calendar.getTimeInMillis());
+            if (transKey != null) {
+                dbRef.child("transactions").child(transKey).setValue(transaction);
+                dbRef.child("balance").setValue(currentUserBalance + amount);
+                Toast.makeText(this, "Lưu thu nhập thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        } else {
+            if (potName.isEmpty()) {
+                Toast.makeText(this, "Vui lòng chọn hũ chi tiêu", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            // 2. Cập nhật số dư trong Hũ
-            long newBalance = type.equals("Income") ? selectedPot.getBalance() + amount : selectedPot.getBalance() - amount;
-            dbRef.child("pots").child(selectedPot.getKey()).child("balance").setValue(newBalance);
+            Pot selectedPot = null;
+            for (Pot pot : potList) {
+                if (pot.getName().equals(potName)) {
+                    selectedPot = pot;
+                    break;
+                }
+            }
 
-            Toast.makeText(this, "Lưu giao dịch thành công", Toast.LENGTH_SHORT).show();
-            finish();
+            if (selectedPot == null) return;
+
+            Transaction transaction = new Transaction(amount, dateStr, type, frequency, selectedPot.getKey(), note, calendar.getTimeInMillis());
+            if (transKey != null) {
+                dbRef.child("transactions").child(transKey).setValue(transaction);
+                long newBalance = selectedPot.getBalance() - amount;
+                dbRef.child("pots").child(selectedPot.getKey()).child("balance").setValue(newBalance);
+                Toast.makeText(this, "Lưu chi tiêu thành công", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     }
 }

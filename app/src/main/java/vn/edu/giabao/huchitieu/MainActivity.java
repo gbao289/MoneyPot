@@ -142,9 +142,17 @@ public class MainActivity extends AppCompatActivity implements PotAdapter.OnPotC
 
     @Override
     public void onPotClick(Pot pot) {
-        showAdjustPotDialog(pot);
+        // Chuyển sang màn hình chi tiết hũ
+        Intent intent = new Intent(this, PotDetailActivity.class);
+        intent.putExtra("USER_KEY", userKey);
+        intent.putExtra("POT_KEY", pot.getKey());
+        intent.putExtra("POT_NAME", pot.getName());
+        intent.putExtra("POT_BALANCE", pot.getBalance());
+        intent.putExtra("POT_PERCENT", pot.getPercent());
+        startActivity(intent);
     }
 
+    // Giữ lại hàm này nếu bạn muốn gọi từ một nơi khác (ví dụ: nhấn giữ hũ)
     private void showAdjustPotDialog(Pot pot) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_pot, null);
@@ -201,6 +209,11 @@ public class MainActivity extends AppCompatActivity implements PotAdapter.OnPotC
                     User user = snapshot.getValue(User.class);
                     if (user != null) {
                         textViewUserName.setText(user.getName());
+                        
+                        // Cập nhật số dư tổng hiển thị (User balance)
+                        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+                        textViewTotalBalance.setText(currencyFormat.format(user.getBalance()));
+
                         if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
                             try {
                                 byte[] decodedString = Base64.decode(user.getAvatarUrl(), Base64.DEFAULT);
@@ -222,18 +235,15 @@ public class MainActivity extends AppCompatActivity implements PotAdapter.OnPotC
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 potList.clear();
-                long totalValue = 0;
                 for (DataSnapshot data : snapshot.getChildren()) {
                     Pot pot = data.getValue(Pot.class);
                     if (pot != null) {
                         pot.setKey(data.getKey());
                         potList.add(pot);
-                        totalValue += pot.getBalance();
                     }
                 }
                 Collections.sort(potList, (p1, p2) -> Integer.compare(p2.getPercent(), p1.getPercent()));
                 potAdapter.notifyDataSetChanged();
-                updateTotalValueUI(totalValue);
             }
 
             @Override
@@ -241,11 +251,6 @@ public class MainActivity extends AppCompatActivity implements PotAdapter.OnPotC
                 Toast.makeText(MainActivity.this, "Lỗi tải dữ liệu hũ", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void updateTotalValueUI(long total) {
-        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        textViewTotalBalance.setText(currencyFormat.format(total));
     }
 
     private void saveImageToDatabase(Uri uri) {

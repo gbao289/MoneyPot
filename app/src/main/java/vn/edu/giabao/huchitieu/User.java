@@ -5,6 +5,7 @@ public class User {
     private String email;
     private String password;
     private String avatarUrl;
+    private long balance; // Số dư tổng (chưa phân bổ vào hũ)
 
     public User() {
         // Required for Firebase
@@ -14,6 +15,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.balance = 0;
     }
 
     public String getName() {
@@ -46,5 +48,13 @@ public class User {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public long getBalance() {
+        return balance;
+    }
+
+    public void setBalance(long balance) {
+        this.balance = balance;
     }
 }
