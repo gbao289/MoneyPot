@@ -26,9 +26,9 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Item: Export Data -->
+            <!-- Item: Statistics (Thống kê) -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardExport"
+                android:id="@+id/cardStatistics"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
@@ -47,7 +47,7 @@
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@android:drawable/ic_menu_save"
+                        android:src="@android:drawable/ic_menu_sort_by_size"
                         app:tint="#4CAF50" />
 
                     <LinearLayout
@@ -60,7 +60,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xuất dữ liệu"
+                            android:text="Thống kê"
                             android:textColor="#212121"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -68,7 +68,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xuất báo cáo sang file Excel/CSV"
+                            android:text="Xem biểu đồ thu chi chi tiết"
                             android:textColor="#757575"
                             android:textSize="13sp" />
                     </LinearLayout>

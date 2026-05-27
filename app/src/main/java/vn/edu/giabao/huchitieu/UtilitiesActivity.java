@@ -13,7 +13,7 @@ import com.google.android.material.card.MaterialCardView;
 public class UtilitiesActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
-    private MaterialCardView cardExport, cardReminders, cardCategories, cardLogout;
+    private MaterialCardView cardStatistics, cardReminders, cardCategories, cardLogout;
     private String userKey;
 
     @Override
@@ -38,12 +38,17 @@ public class UtilitiesActivity extends AppCompatActivity {
 
     private void initViews() {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        cardExport = findViewById(R.id.cardExport);
+        cardStatistics = findViewById(R.id.cardStatistics);
         cardReminders = findViewById(R.id.cardReminders);
         cardCategories = findViewById(R.id.cardCategories);
         cardLogout = findViewById(R.id.cardLogout);
 
-        cardExport.setOnClickListener(v -> Toast.makeText(this, "Tính năng Xuất dữ liệu đang phát triển", Toast.LENGTH_SHORT).show());
+        cardStatistics.setOnClickListener(v -> {
+            Intent intent = new Intent(this, StatisticsActivity.class);
+            intent.putExtra("USER_KEY", userKey);
+            startActivity(intent);
+        });
+
         cardReminders.setOnClickListener(v -> Toast.makeText(this, "Tính năng Nhắc nhở đang phát triển", Toast.LENGTH_SHORT).show());
         cardCategories.setOnClickListener(v -> Toast.makeText(this, "Tính năng Quản lý danh mục đang phát triển", Toast.LENGTH_SHORT).show());
         

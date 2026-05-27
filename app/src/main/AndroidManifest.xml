@@ -47,6 +47,9 @@
         <activity android:name=".PotDetailActivity"
             android:label="Chi tiết Hũ"
             android:parentActivityName=".MainActivity" />
+        <activity android:name=".StatisticsActivity"
+            android:label="Thống kê"
+            android:parentActivityName=".UtilitiesActivity" />
 
     </application>
 
