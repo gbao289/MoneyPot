@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F0F2F5"
+    android:fitsSystemWindows="true"
     tools:context=".RecurringTransactionActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -36,7 +37,7 @@
             android:clipToPadding="false"
             android:paddingBottom="120dp"> <!-- Padding để nội dung không bị FAB che -->
 
-            <!-- Info Card: Tăng bo góc lên 24dp để đồng bộ -->
+            <!-- Info Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,7 +100,7 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Nút FAB: Điều chỉnh margin để nằm trên Bottom Nav -->
+    <!-- Nút FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddRecurring"
         android:layout_width="wrap_content"

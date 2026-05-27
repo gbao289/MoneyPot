@@ -20,6 +20,7 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.PotViewHolder> {
 
     public interface OnPotClickListener {
         void onPotClick(Pot pot);
+        void onPotLongClick(Pot pot);
     }
 
     public PotAdapter(List<Pot> potList, OnPotClickListener listener) {
@@ -49,6 +50,14 @@ public class PotAdapter extends RecyclerView.Adapter<PotAdapter.PotViewHolder> {
             if (listener != null) {
                 listener.onPotClick(pot);
             }
+        });
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onPotLongClick(pot);
+                return true;
+            }
+            return false;
         });
     }
 

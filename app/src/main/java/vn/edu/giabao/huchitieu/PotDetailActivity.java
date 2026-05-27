@@ -1,6 +1,5 @@
 package vn.edu.giabao.huchitieu;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -31,10 +30,9 @@ public class PotDetailActivity extends AppCompatActivity {
     private TransactionAdapter adapter;
     private List<Transaction> transactionList = new ArrayList<>();
     
-    private String userKey, potKey, potName;
-    private long potBalance;
-    private int potPercent;
-    private DatabaseReference transRef;
+    private String userKey, potKey;
+    private DatabaseReference transRef, potRef;
+    private Pot currentPot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +41,9 @@ public class PotDetailActivity extends AppCompatActivity {
 
         userKey = getIntent().getStringExtra("USER_KEY");
         potKey = getIntent().getStringExtra("POT_KEY");
-        potName = getIntent().getStringExtra("POT_NAME");
-        potBalance = getIntent().getLongExtra("POT_BALANCE", 0);
-        potPercent = getIntent().getIntExtra("POT_PERCENT", 0);
 
         initViews();
+        loadPotDetails();
         loadTransactions();
     }
 
@@ -66,14 +62,39 @@ public class PotDetailActivity extends AppCompatActivity {
         tvEmptyHistory = findViewById(R.id.tvEmptyHistory);
         rvTransactions = findViewById(R.id.rvPotTransactions);
 
-        tvPotName.setText(potName);
-        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        tvPotBalance.setText(currencyFormat.format(potBalance));
-        tvPotPercent.setText("Tỉ lệ: " + potPercent + "%");
-
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         adapter = new TransactionAdapter(transactionList);
         rvTransactions.setAdapter(adapter);
+    }
+
+    private void loadPotDetails() {
+        if (userKey == null || potKey == null) return;
+        potRef = FirebaseDatabase.getInstance().getReference("users")
+                .child(userKey).child("pots").child(potKey);
+
+        potRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                currentPot = snapshot.getValue(Pot.class);
+                if (currentPot != null) {
+                    currentPot.setKey(snapshot.getKey());
+                    updatePotUI();
+                } else {
+                    // Hũ đã bị xóa
+                    finish();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void updatePotUI() {
+        tvPotName.setText(currentPot.getName());
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        tvPotBalance.setText(currencyFormat.format(currentPot.getBalance()));
+        tvPotPercent.setText(String.format(Locale.getDefault(), "Tỉ lệ: %d%%", currentPot.getPercent()));
     }
 
     private void loadTransactions() {
@@ -93,7 +114,6 @@ public class PotDetailActivity extends AppCompatActivity {
                     }
                 }
                 
-                // Sắp xếp giao dịch mới nhất lên đầu
                 Collections.sort(transactionList, (t1, t2) -> Long.compare(t2.getTimestamp(), t1.getTimestamp()));
                 
                 adapter.notifyDataSetChanged();

@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements PotAdapter.OnPotC
 
     @Override
     public void onPotClick(Pot pot) {
-        // Chuyển sang màn hình chi tiết hũ
+        // Nhấn bình thường: Vào chi tiết
         Intent intent = new Intent(this, PotDetailActivity.class);
         intent.putExtra("USER_KEY", userKey);
         intent.putExtra("POT_KEY", pot.getKey());
@@ -152,7 +152,12 @@ public class MainActivity extends AppCompatActivity implements PotAdapter.OnPotC
         startActivity(intent);
     }
 
-    // Giữ lại hàm này nếu bạn muốn gọi từ một nơi khác (ví dụ: nhấn giữ hũ)
+    @Override
+    public void onPotLongClick(Pot pot) {
+        // Nhấn giữ: Hiện Dialog Sửa/Xóa (Chức năng cũ)
+        showAdjustPotDialog(pot);
+    }
+
     private void showAdjustPotDialog(Pot pot) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit_pot, null);
