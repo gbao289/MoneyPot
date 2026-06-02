@@ -203,6 +203,12 @@ public class AddTransactionActivity extends AppCompatActivity {
 
             if (selectedPot == null) return;
 
+            // Kiểm tra số dư trong hũ
+            if (selectedPot.getBalance() < amount) {
+                Toast.makeText(this, "Số dư trong hũ không đủ", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Transaction transaction = new Transaction(amount, dateStr, type, frequency, selectedPot.getKey(), note, calendar.getTimeInMillis());
             if (transKey != null) {
                 dbRef.child("transactions").child(transKey).setValue(transaction);
