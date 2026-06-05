@@ -42,7 +42,7 @@ public class CalendarActivity extends AppCompatActivity {
     private MaterialButton btnAddTransaction;
     
     private String userKey;
-    private Calendar currentCalendar; 
+    private Calendar currentCalendar;
     private List<CalendarDay> calendarDayList;
     private CalendarDayAdapter dayAdapter;
     private boolean isExpanded = false;
